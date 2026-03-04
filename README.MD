@@ -26,7 +26,7 @@ Python 3.8+
 
 cryptography library (pip install cryptography)
 
-Running the Project
+Running the Project -
 Start the server:
 python server.py
 
@@ -35,6 +35,6 @@ python client.py
 
 Follow the prompts to send encrypted messages.
 
-Purpose
+Purpose:
 This was built to demonstrate understanding of secure messaging using real cryptographic techniques, with emphasis on the CIA triad.
 

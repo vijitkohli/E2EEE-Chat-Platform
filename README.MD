@@ -1,40 +1,52 @@
-End-to-End Encrypted Chat (E2EE Chat)
-This project is a simple proof-of-concept end-to-end encrypted chat system. It allows two users to communicate securely via a central server. Messages are encrypted client-side using AES-GCM, and AES keys are encrypted using RSA. The server cannot read any message contents.
+E2EE Command-Line Chat Platform
+📌 Project Overview
+A minimal, command-line-based client-server chat application designed to demonstrate core cryptographic principles and the CIA triad (Confidentiality, Integrity, Availability). This platform ensures that messages are strictly end-to-end encrypted (E2EE), preventing even the server or underlying infrastructure from accessing plaintext contents.
 
-Features
-RSA key pair generation per client
+🚀 Key Features
 
-Public key exchange through the server
+True End-to-End Encryption (E2EE): Cryptographic operations (key generation, encryption, and decryption) are handled entirely on the client side.
 
-AES-GCM encryption for message confidentiality and integrity
+Hybrid Encryption Model: Utilizes AES-256 in GCM mode for symmetric message encryption and RSA-2048 for secure asymmetric key exchange.
 
-End-to-end encryption with no plaintext exposed to the server
+Message Authentication & Integrity: Leverages AES-GCM's built-in authentication tags (128-bit) to detect tampering or ciphertext modification.
 
-Logged server output showing only ciphertext
+Zero-Knowledge Server: The server functions strictly as a message relay and public key exchange facilitator, completely blind to message contents and private keys.
 
-How It Works
-Clients generate RSA key pairs.
+🛠️ Technology Stack & Cryptography
+Language: Python 
+Asymmetric Encryption: RSA (2048-bit) 
+Symmetric Encryption: AES-GCM (256-bit) 
+Architecture: Client-Server Model 
 
-Public keys are sent to the server and shared on request.
+🏗️ System Architecture & Data Flow
+1. Key Generation & Exchange
+Upon connection, each client locally generates an RSA key pair. The public key is transmitted to the server for distribution, while the private key remains exclusively on the client's device.
 
-Messages are encrypted with AES; AES keys are encrypted with the recipient’s public RSA key.
+2. Message Encryption (Sender)
+When User A sends a message to User B:
 
-The server only forwards encrypted blobs and cannot decrypt them.
+A random AES-256 session key is generated.
+The plaintext is encrypted using AES-GCM, producing the ciphertext, a nonce, and an authentication tag.
+The AES session key is encrypted using User B's RSA public key.
+The combined payload is transmitted to the server.
 
-Requirements
-Python 3.8+
+3. Message Decryption (Recipient)
+Upon receiving the payload:
 
-cryptography library (pip install cryptography)
+User B decrypts the AES session key using their RSA private key.
 
-Running the Project -
-Start the server:
+The recovered AES key is used to verify the authentication tag and decrypt the ciphertext back into plaintext.
+
+🛡️ Threat Model & Limitations
+As an educational prototype focused on transmission security, the system acknowledges the following limitations:
+
+No Forward Secrecy: If a client's RSA private key is compromised, all past messages encrypted with that key could be decrypted.
+No Mutual Authentication: Public keys are accepted without digital signatures or trusted certificate authorities, leaving theoretical vulnerabilities to Man-in-the-Middle (MITM) attacks if the server is compromised.
+Offline Messaging: Both users must be online simultaneously for the session key exchange and communication to occur.
+
+💻 Usage & Demo
+1. Start the Server:
 python server.py
 
-Start atleast two clients in a separate terminals each:
+2. Start a Client:
 python client.py
-
-Follow the prompts to send encrypted messages.
-
-Purpose:
-This was built to demonstrate understanding of secure messaging using real cryptographic techniques, with emphasis on the CIA triad.
-
